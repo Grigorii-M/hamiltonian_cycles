@@ -1,20 +1,22 @@
-use ham_cycles::symbolic_alg::VecSymbol;
-use nalgebra::*;
+use ham_cycles::*;
 
 fn main() {
-    use num_traits::Zero;
-    use num_traits::One;
-    let m1 = DMatrix::from_row_slice(5, 5, &[
-        VecSymbol::zero(), VecSymbol::zero(), VecSymbol::new("c"), VecSymbol::new("d"), VecSymbol::zero(),
-        VecSymbol::zero(), VecSymbol::zero(), VecSymbol::zero(), VecSymbol::new("d"), VecSymbol::zero(),
-        VecSymbol::zero(), VecSymbol::new("b"), VecSymbol::zero(), VecSymbol::zero(), VecSymbol::zero(),
-        VecSymbol::zero(), VecSymbol::zero(), VecSymbol::new("c"), VecSymbol::zero(), VecSymbol::new("e"),
-        VecSymbol::new("a"), VecSymbol::new("b"), VecSymbol::zero(), VecSymbol::zero(), VecSymbol::zero(),
-    ]);
+    #[rustfmt::skip]
+    let m = symbolic_matrix!(
+        5, 5,
+        [
+            0, 0, c, d, 0,
+            0, 0, 0, d, 0,
+            0, b, 0, 0, 0,
+            0, 0, c, 0, e,
+            a, b, 0, 0, 0,
+        ]
+    );
 
-    // println!("{:#?}", m1);
+    let mut v = symbolic_vector!(0, 0, 1, 0, 1);
 
-    let v = DVector::from_row_slice(&[VecSymbol::zero(), VecSymbol::zero(), VecSymbol::one(), VecSymbol::zero(), VecSymbol::one()]);
-
-    print!("{:#?}", m1 * v);
+    for _ in 0..5 {
+        v = m.clone() * v;
+        println!("{:#?}", v);
+    }
 }
