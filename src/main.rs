@@ -13,9 +13,19 @@ fn main() {
         ]
     );
 
-    let mut v = symbolic_vector!(0, 0, 1, 0, 1);
+    // let mut v = symbolic_vector!(0, 0, 1, 0, 1);
+    let mut v = symbolic_matrix!(
+        5, 5,
+        [
+            0, 0, 1, 1, 0,
+            0, 0, 0, 1, 0,
+            0, 1, 0, 0, 0,
+            0, 0, 1, 0, 1,
+            1, 1, 0, 0, 0,
+        ]
+    );
 
-    for _ in 0..5 {
+    for _ in 0..4 {
         v = m.clone() * v;
         println!("{:#?}", v);
     }
