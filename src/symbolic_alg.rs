@@ -16,6 +16,19 @@ macro_rules! symbolic_matrix {
 
             nalgebra::DMatrix::from_row_slice($height, $width, data.as_slice())
         }
+    };
+    ($width: ident, $height: ident, [$($val: tt),+ $(,)?]) => {
+        {
+            let data = stringify!($($val),+).split(", ").map(|el| Symbol::new(vec![el])).collect::<Vec<_>>();
+
+            if data.len() > $width as usize * $height as usize {
+                panic!("There is more data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
+            } else if data.len() < $width as usize * $height as usize {
+                panic!("There is less data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
+            }
+
+            nalgebra::DMatrix::from_row_slice($height as usize, $width as usize, data.as_slice())
+        }
     }
 }
 
@@ -57,7 +70,7 @@ mod macro_tests {
 
         assert_eq!(m, expected);
     }
-    
+
     #[test]
     #[rustfmt::skip]
     fn test_symbolic_vector_macro() {

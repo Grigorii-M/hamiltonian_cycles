@@ -3,15 +3,13 @@ use std::ops::*;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Symbol {
     /// Each vector element is a multiplication, the whole vector is addition
-    data: Vec<String>,
+    pub(crate) data: Vec<String>,
 }
 
 impl Symbol {
     pub fn new(data: Vec<&str>) -> Self {
         let data = data.into_iter().map(|el| el.to_string()).collect();
-        Self {
-            data,
-        }
+        Self { data }
     }
 }
 
@@ -42,26 +40,30 @@ impl Mul for Symbol {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        let data = self.data.into_iter().flat_map(|l_el| {
-            let d = rhs.data.iter().map(move |r_el| {
-                if l_el != "0" && r_el != "0" {
-                    if l_el == "1" {
-                        r_el.clone()
-                    } else if r_el == "1" {
-                        l_el.clone()
+        let data = self
+            .data
+            .into_iter()
+            .flat_map(|l_el| {
+                let d = rhs.data.iter().map(move |r_el| {
+                    if l_el != "0" && r_el != "0" {
+                        if l_el == "1" {
+                            r_el.clone()
+                        } else if r_el == "1" {
+                            l_el.clone()
+                        } else {
+                            let mut el = l_el.clone();
+                            el.push(' ');
+                            el.push_str(&r_el);
+                            el
+                        }
                     } else {
-                        let mut el = l_el.clone();
-                        el.push(' ');
-                        el.push_str(&r_el);
-                        el
+                        "0".to_string()
                     }
-                } else {
-                    "0".to_string()
-                }
-
-            });
-            d
-        }).filter(|el| el != "0").collect::<Vec<String>>();
+                });
+                d
+            })
+            .filter(|el| el != "0")
+            .collect::<Vec<String>>();
 
         if data.is_empty() {
             use num_traits::Zero;
@@ -242,7 +244,10 @@ mod data_tests {
         let v3 = Symbol::new(vec!["v3"]);
         let v4 = Symbol::new(vec!["v4"]);
 
-        assert_eq!((v1 + v2) * (v3 + v4), Symbol::new(vec!["v1 v3", "v1 v4", "v2 v3", "v2 v4"]));
+        assert_eq!(
+            (v1 + v2) * (v3 + v4),
+            Symbol::new(vec!["v1 v3", "v1 v4", "v2 v3", "v2 v4"])
+        );
     }
 
     #[test]
