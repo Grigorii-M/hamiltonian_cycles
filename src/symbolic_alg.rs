@@ -6,11 +6,18 @@ pub use data::*;
 macro_rules! symbolic_matrix {
     ($width: literal, $height: literal, [$($val: tt),+ $(,)?]) => {
         {
-            let data = stringify!($($val),+).split(", ").map(|el| Symbol::new(vec![el])).collect::<Vec<_>>();
+            let data = stringify!($($val),+)
+                .split("\n")
+                .collect::<Vec<_>>()
+                .join(" ")
+                .split(", ")
+                .map(|el| Symbol::new(vec![el]))
+                .collect::<Vec<_>>();
 
             if data.len() > $width * $height {
                 panic!("There is more data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
             } else if data.len() < $width * $height {
+                println!("{:?}", data);
                 panic!("There is less data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
             }
 
@@ -19,11 +26,18 @@ macro_rules! symbolic_matrix {
     };
     ($width: ident, $height: ident, [$($val: tt),+ $(,)?]) => {
         {
-            let data = stringify!($($val),+).split(", ").map(|el| Symbol::new(vec![el])).collect::<Vec<_>>();
+            let data = stringify!($($val),+)
+                .split("\n")
+                .collect::<Vec<_>>()
+                .join(" ")
+                .split(", ")
+                .map(|el| Symbol::new(vec![el]))
+                .collect::<Vec<_>>();
 
             if data.len() > $width as usize * $height as usize {
                 panic!("There is more data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
             } else if data.len() < $width as usize * $height as usize {
+                println!("{:?}", data);
                 panic!("There is less data than the size of the matrix; matrix size: {}, data size: {}", $width * $height, data.len());
             }
 
@@ -36,7 +50,10 @@ macro_rules! symbolic_matrix {
 macro_rules! symbolic_vector {
     ($($val: tt),+ $(,)?) => {
         {
-            let data = stringify!($($val),+).split(", ").map(|el| Symbol::new(vec![el])).collect::<Vec<_>>();
+            let data = stringify!($($val),+)
+                .split(", ")
+                .map(|el| Symbol::new(vec![el]))
+                .collect::<Vec<_>>();
 
             nalgebra::DVector::from_row_slice(data.as_slice())
         }

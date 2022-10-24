@@ -1,18 +1,18 @@
 use ham_cycles::*;
 
 fn main() {
-    let labels = vec!["a", "b", "c", "d", "e"];
+    let labels = vec!["v1", "v2", "v3", "v4", "v5"];
     const NUM_VERTICES: u32 = 5;
 
     #[rustfmt::skip]
     let m = symbolic_matrix!(
         NUM_VERTICES, NUM_VERTICES,
         [
-            0, b, c, 0, e,
-            0, 0, c, 0, e,
-            0, b, 0, d, 0,
-            0, b, 0, 0, e,
-            a, 0, c, 0, 0,
+            0, v2, v3, 0, v5,
+            0, 0, v3, 0, v5,
+            0, v2, 0, v4, 0,
+            0, v2, 0, 0, v5,
+            v1, 0, v3, 0, 0,
         ]
     );
 
@@ -40,7 +40,7 @@ fn main() {
     }
 
     match clean_up_data(&data, &labels) {
-        Ok(data) => println!("{:#?}", data),
         Err(msg) => eprintln!("{}", msg),
+        Ok(data) => pretty_print_hamiltonian_paths(&data, &labels),
     }
 }

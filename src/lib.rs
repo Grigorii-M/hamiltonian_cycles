@@ -3,9 +3,32 @@ use std::collections::HashSet;
 
 pub use symbolic_alg::*;
 
+pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<&str>) {
+    if data.len() != labels.len() {
+        panic!(
+            "Data array does not coincide with labels array: data.len() = {}, labels.len() = {}",
+            data.len(),
+            labels.len()
+        );
+    }
+
+    data.iter().enumerate().for_each(|(i, expr)| {
+        let label = labels[i];
+        println!("Starting at {}:", label);
+        expr.data.iter().for_each(|prod| {
+            println!("\t{} {} {}", label, prod, label);
+        });
+        println!();
+    });
+}
+
 pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<&str>) -> Result<Vec<Symbol>, String> {
     if data.len() != labels.len() {
-        return Err(format!("Data array does not coincide with labels array: data.len() = {}, labels.len() = {}", data.len(), labels.len()));
+        return Err(format!(
+            "Data array does not coincide with labels array: data.len() = {}, labels.len() = {}",
+            data.len(),
+            labels.len()
+        ));
     }
 
     let data = data
