@@ -27,12 +27,13 @@ fn main() {
     //         1, 0, 1, 0, 0,
     //     ]
     // );
-    if let Ok((m, mut v, labels)) = graphviz_io::parse_dot_file("./res/graph.dot") {
-        for _ in 0..4 {
+    if let Ok((m, mut v, labels)) = graphviz_io::parse_dot_file("./res/graph_11.dot") {
+        for _ in 0..labels.len() - 1 {
             v = m.clone() * v;
         }
 
         let diag = v.diagonal();
+        // print!("{:#?}", diag);
         let mut data = vec![];
         for i in 0..labels.len() {
             let val = diag[i as usize].clone();
@@ -40,8 +41,8 @@ fn main() {
         }
 
         match clean_up_data(&data, &labels) {
-            Err(msg) => eprintln!("{}", msg),
             Ok(data) => pretty_print_hamiltonian_paths(&data, &labels),
+            Err(msg) => eprintln!("{}", msg),
         }
     }
 }
