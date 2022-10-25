@@ -1,9 +1,10 @@
+pub mod graphviz_io;
 mod symbolic_alg;
 use std::collections::HashSet;
 
 pub use symbolic_alg::*;
 
-pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<&str>) {
+pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<String>) {
     if data.len() != labels.len() {
         panic!(
             "Data array does not coincide with labels array: data.len() = {}, labels.len() = {}",
@@ -13,7 +14,7 @@ pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<&str>) {
     }
 
     data.iter().enumerate().for_each(|(i, expr)| {
-        let label = labels[i];
+        let label = &labels[i];
         println!("Starting at {}:", label);
         expr.data.iter().for_each(|prod| {
             println!("\t{} {} {}", label, prod, label);
@@ -22,7 +23,7 @@ pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<&str>) {
     });
 }
 
-pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<&str>) -> Result<Vec<Symbol>, String> {
+pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<String>) -> Result<Vec<Symbol>, String> {
     if data.len() != labels.len() {
         return Err(format!(
             "Data array does not coincide with labels array: data.len() = {}, labels.len() = {}",
@@ -36,7 +37,7 @@ pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<&str>) -> Result<Vec<Symbo
         .into_iter()
         .enumerate()
         .map(|(i, mut expr)| {
-            let label = labels[i];
+            let label = &labels[i];
             expr.data = expr
                 .data
                 .iter_mut()
@@ -73,7 +74,7 @@ mod cleanup_tests {
             Symbol::new(vec!["c a"]),
             Symbol::new(vec!["a b"]),
         ];
-        let labels = vec!["a", "b", "c"];
+        let labels = vec!["a".to_string(), "b".to_string(), "c".to_string()];
 
         let res = clean_up_data(&data, &labels);
         assert_eq!(
@@ -93,7 +94,7 @@ mod cleanup_tests {
             Symbol::new(vec!["c a"]),
             Symbol::new(vec!["a b c"]),
         ];
-        let labels = vec!["a", "b", "c"];
+        let labels = vec!["a".to_string(), "b".to_string(), "c".to_string()];
 
         let res = clean_up_data(&data, &labels);
         assert_eq!(res.unwrap(), vec![Symbol::new(vec!["c a"])]);
@@ -106,7 +107,7 @@ mod cleanup_tests {
             Symbol::new(vec!["c a c"]),
             Symbol::new(vec!["a b"]),
         ];
-        let labels = vec!["a", "b", "c"];
+        let labels = vec!["a".to_string(), "b".to_string(), "c".to_string()];
 
         let res = clean_up_data(&data, &labels);
         assert_eq!(res.unwrap(), vec![Symbol::new(vec!["a b"])]);
@@ -119,7 +120,7 @@ mod cleanup_tests {
             Symbol::new(vec!["c a c"]),
             Symbol::new(vec!["a b c"]),
         ];
-        let labels = vec!["a", "b", "c"];
+        let labels = vec!["a".to_string(), "b".to_string(), "c".to_string()];
 
         let res = clean_up_data(&data, &labels);
         assert_eq!(res.unwrap(), vec![Symbol::new(vec!["b c"])]);

@@ -1,5 +1,6 @@
 mod data;
 pub use data::*;
+pub use num_traits::{One, Zero};
 
 // We have to put this here because rust_analyzer does not detect usage in macro definitions
 #[macro_export]
