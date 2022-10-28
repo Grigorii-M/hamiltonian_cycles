@@ -27,7 +27,7 @@ fn main() {
     //         1, 0, 1, 0, 0,
     //     ]
     // );
-    if let Ok((m, mut v, labels)) = graphviz_io::parse_dot_file("./res/graph_11.dot") {
+    if let Ok((m, mut v, labels)) = graphviz_io::parse_dot_file("./res/digraph.dot") {
         for _ in 0..labels.len() - 1 {
             v = m.clone() * v;
         }
@@ -41,7 +41,10 @@ fn main() {
         }
 
         match clean_up_data(&data, &labels) {
-            Ok(data) => pretty_print_hamiltonian_paths(&data, &labels),
+            Ok(data) => match pretty_print_hamiltonian_paths(&data, &labels) {
+                Ok(output) => println!("{}", output),
+                Err(_) => eprintln!("There are no hamiltonian cycles in this graph"),
+            },
             Err(msg) => eprintln!("{}", msg),
         }
     }

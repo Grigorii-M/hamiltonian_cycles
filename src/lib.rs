@@ -4,23 +4,26 @@ use std::collections::HashSet;
 
 pub use symbolic_alg::*;
 
-pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<String>) {
+pub fn pretty_print_hamiltonian_paths(data: &Vec<Symbol>, labels: &Vec<String>) -> Result<String, String> {
     if data.len() != labels.len() {
-        panic!(
+        return Err(format!(
             "Data array does not coincide with labels array: data.len() = {}, labels.len() = {}",
             data.len(),
             labels.len()
-        );
+            ));
     }
 
+    let mut output = String::new();
     data.iter().enumerate().for_each(|(i, expr)| {
         let label = &labels[i];
-        println!("Starting at {}:", label);
+        output.push_str(&format!("Starting at {}:\n", label));
         expr.data.iter().for_each(|prod| {
-            println!("\t{} {} {}", label, prod, label);
+            output.push_str(&format!("\t{} {} {}\n", label, prod, label));
         });
-        println!();
+        output.push_str("\n");
     });
+
+    Ok(output)
 }
 
 pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<String>) -> Result<Vec<Symbol>, String> {
@@ -57,7 +60,7 @@ pub fn clean_up_data(data: &Vec<Symbol>, labels: &Vec<String>) -> Result<Vec<Sym
                 .collect();
             expr
         })
-        .filter(|el| !el.data.is_empty())
+        .filter(|el| !el.data.is_empty() && !el.is_zero())
         .collect();
 
     Ok(data)
